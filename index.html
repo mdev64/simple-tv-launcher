@@ -1,0 +1,226 @@
+<!doctype html>
+<html lang="en">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <title>Simple TV Launcher — a clean home screen for Android TV</title>
+  <meta name="description" content="A clean, fast home screen for Android TV and Google TV. Your favourite apps in a frosted-glass carousel. Under 1 MB, made for the remote.">
+  <meta name="theme-color" content="#0d0d14">
+  <meta property="og:title" content="Simple TV Launcher">
+  <meta property="og:description" content="A clean, fast home screen for Android TV and Google TV. Under 1 MB, made for the remote.">
+  <meta property="og:image" content="images/home.jpg">
+  <link rel="icon" type="image/png" href="images/icon.png">
+  <link rel="stylesheet" href="style.css">
+</head>
+<body>
+  <header class="nav" id="top">
+    <div class="wrap nav-inner">
+      <a class="brand" href="#top">
+        <img src="images/icon.png" alt="" width="32" height="32">
+        <span>Simple TV Launcher</span>
+      </a>
+      <nav class="nav-links" aria-label="Sections">
+        <a href="#features">Features</a>
+        <a href="#screens">Screens</a>
+        <a href="#remote">Remote</a>
+        <a href="#install">Install</a>
+      </nav>
+      <a class="btn btn-small" href="https://github.com/mdev64/simple-tv-launcher">GitHub</a>
+    </div>
+  </header>
+
+  <main>
+    <section class="hero">
+      <div class="wrap hero-inner">
+        <p class="eyebrow">For Android TV &amp; Google TV</p>
+        <h1>A clean, fast home screen<br>for your TV.</h1>
+        <p class="lead">Your favourite apps in a frosted-glass carousel. Everything else one press away.
+          Under 1&nbsp;MB, made for the remote.</p>
+        <div class="cta">
+          <a class="btn btn-primary" href="https://github.com/mdev64/simple-tv-launcher/releases/latest">
+            <svg viewBox="0 0 24 24" aria-hidden="true"><path d="M12 3v12m0 0-5-5m5 5 5-5M4 20h16"/></svg>
+            Download the latest release
+          </a>
+          <a class="btn" href="#screens">See it in action</a>
+        </div>
+        <ul class="pills" aria-label="At a glance">
+          <li>No ads</li><li>No tracking</li><li>No account</li><li>Open source</li>
+        </ul>
+      </div>
+      <div class="wrap">
+        <figure class="tv reveal">
+          <div class="tv-screen">
+            <img src="images/home.jpg" alt="Simple TV Launcher home screen: a carousel with Netflix in the centre" width="1280" height="720">
+          </div>
+          <div class="tv-stand" aria-hidden="true"></div>
+        </figure>
+      </div>
+    </section>
+
+    <section class="section" id="features">
+      <div class="wrap">
+        <h2 class="section-title">Everything you need. Nothing you don't.</h2>
+        <div class="features">
+          <article class="feature reveal">
+            <div class="feature-icon" aria-hidden="true">🎞</div>
+            <h3>Carousel home</h3>
+            <p>Big cards for your pinned apps, tinted with each app's own colours.</p>
+          </article>
+          <article class="feature reveal">
+            <div class="feature-icon" aria-hidden="true">📺</div>
+            <h3>Other apps, one press down</h3>
+            <p>Every app you haven't pinned, in a tidy grid.</p>
+          </article>
+          <article class="feature reveal">
+            <div class="feature-icon" aria-hidden="true">🖼</div>
+            <h3>Make it yours</h3>
+            <p>Built-in wallpapers, your own photos, solid colours and an accent colour.</p>
+          </article>
+          <article class="feature reveal">
+            <div class="feature-icon" aria-hidden="true">🕒</div>
+            <h3>Clock &amp; date</h3>
+            <p>12- or 24-hour format, or hidden entirely.</p>
+          </article>
+          <article class="feature reveal">
+            <div class="feature-icon" aria-hidden="true">🌙</div>
+            <h3>Screen saver</h3>
+            <p>A black screen, a floating clock, or a bouncing DVD-style word.</p>
+          </article>
+          <article class="feature reveal">
+            <div class="feature-icon" aria-hidden="true">🎮</div>
+            <h3>Remote-first</h3>
+            <p>Every screen works with the D-pad. No mouse, no touch.</p>
+          </article>
+          <article class="feature reveal">
+            <div class="feature-icon" aria-hidden="true">⚡</div>
+            <h3>Tiny and quick</h3>
+            <p>Under 1&nbsp;MB, built on plain Android views for smooth motion on modest TV hardware.</p>
+          </article>
+          <article class="feature reveal">
+            <div class="feature-icon" aria-hidden="true">🔒</div>
+            <h3>Private by design</h3>
+            <p>No ads, no tracking, no account. It just shows your apps.</p>
+          </article>
+        </div>
+      </div>
+    </section>
+
+    <section class="section section-alt" id="screens">
+      <div class="wrap">
+        <h2 class="section-title">Take a look</h2>
+        <p class="section-sub">Use <kbd>◀</kbd> <kbd>▶</kbd> on your keyboard, just like on the remote.</p>
+
+        <div class="gallery" data-gallery>
+          <div class="gallery-stage">
+            <button class="gallery-arrow prev" type="button" aria-label="Previous screenshot" data-prev>
+              <svg viewBox="0 0 24 24" aria-hidden="true"><path d="m15 5-7 7 7 7"/></svg>
+            </button>
+            <button class="gallery-view" type="button" aria-label="Open screenshot full size" data-open>
+              <img data-main src="images/home-carousel.jpg" alt="" width="1280" height="720">
+            </button>
+            <button class="gallery-arrow next" type="button" aria-label="Next screenshot" data-next>
+              <svg viewBox="0 0 24 24" aria-hidden="true"><path d="m9 5 7 7-7 7"/></svg>
+            </button>
+          </div>
+          <div class="gallery-caption" aria-live="polite">
+            <strong data-title></strong>
+            <span data-desc></span>
+          </div>
+          <div class="gallery-thumbs" role="tablist" aria-label="Screens">
+            <button type="button" role="tab" data-src="images/home-carousel.jpg" data-t="Carousel" data-d="Step through your apps with ◀ ▶.">
+              <img src="images/home-carousel.jpg" alt="Carousel" loading="lazy" width="1280" height="720">
+            </button>
+            <button type="button" role="tab" data-src="images/other-apps.jpg" data-t="Other apps" data-d="Everything you haven't pinned, one press down.">
+              <img src="images/other-apps.jpg" alt="Other apps grid" loading="lazy" width="1280" height="720">
+            </button>
+            <button type="button" role="tab" data-src="images/app-options.jpg" data-t="App options" data-d="Hold OK to move, remove or hide an app.">
+              <img src="images/app-options.jpg" alt="App options menu" loading="lazy" width="1280" height="720">
+            </button>
+            <button type="button" role="tab" data-src="images/top-bar.jpg" data-t="Top bar" data-d="Wi-Fi, VPN, launcher settings and TV settings.">
+              <img src="images/top-bar.jpg" alt="Top bar" loading="lazy" width="1280" height="720">
+            </button>
+            <button type="button" role="tab" data-src="images/settings.jpg" data-t="Settings" data-d="Wallpaper, accent colour, clock and screen saver.">
+              <img src="images/settings.jpg" alt="Settings" loading="lazy" width="1280" height="720">
+            </button>
+            <button type="button" role="tab" data-src="images/wallpaper-picker.jpg" data-t="Wallpaper picker" data-d="Built-in wallpapers or your own photos, all with the remote.">
+              <img src="images/wallpaper-picker.jpg" alt="Wallpaper picker" loading="lazy" width="1280" height="720">
+            </button>
+          </div>
+        </div>
+      </div>
+    </section>
+
+    <section class="section" id="remote">
+      <div class="wrap remote-grid">
+        <div>
+          <h2 class="section-title left">Made for the remote</h2>
+          <p class="section-sub left">Five buttons are all you need. Hover a button to see what it does.</p>
+          <ul class="keys" data-keys>
+            <li data-key="lr"><span class="key">◀ ▶</span><span>Move between your apps</span></li>
+            <li data-key="ok"><span class="key">OK</span><span>Open the app</span></li>
+            <li data-key="hold"><span class="key">HOLD OK</span><span>Options: move, remove, hide, uninstall</span></li>
+            <li data-key="down"><span class="key">▼</span><span>Other apps (hold OK there to add an app to home)</span></li>
+            <li data-key="up"><span class="key">▲</span><span>Top bar: Wi-Fi, VPN, launcher settings, TV settings</span></li>
+          </ul>
+        </div>
+        <div class="remote reveal" aria-hidden="true">
+          <div class="remote-dpad">
+            <span class="d up" data-key="up">▲</span>
+            <span class="d left" data-key="lr">◀</span>
+            <span class="d ok" data-key="ok hold">OK</span>
+            <span class="d right" data-key="lr">▶</span>
+            <span class="d down" data-key="down">▼</span>
+          </div>
+          <div class="remote-row"><span></span><span></span><span></span></div>
+        </div>
+      </div>
+    </section>
+
+    <section class="section section-alt" id="install">
+      <div class="wrap">
+        <h2 class="section-title">Install in three steps</h2>
+        <ol class="steps">
+          <li class="reveal">
+            <span class="step-n">1</span>
+            <h3>Download</h3>
+            <p>Get <code>release-signed.apk</code> from the
+              <a href="https://github.com/mdev64/simple-tv-launcher/releases/latest">latest release</a>.</p>
+          </li>
+          <li class="reveal">
+            <span class="step-n">2</span>
+            <h3>Copy &amp; install</h3>
+            <p>Move it to your TV with a USB drive, LocalSend or a file manager, then open it to install.</p>
+          </li>
+          <li class="reveal">
+            <span class="step-n">3</span>
+            <h3>Make it home</h3>
+            <p>Open <strong>Simple TV Launcher</strong>. To use it for the Home button, go to
+              <strong>Settings → Default Launcher</strong>.</p>
+          </li>
+        </ol>
+        <div class="cta center">
+          <a class="btn btn-primary" href="https://github.com/mdev64/simple-tv-launcher/releases/latest">
+            <svg viewBox="0 0 24 24" aria-hidden="true"><path d="M12 3v12m0 0-5-5m5 5 5-5M4 20h16"/></svg>
+            Download APK
+          </a>
+          <a class="btn" href="https://github.com/mdev64/simple-tv-launcher/blob/main/doc/BUILD.md">Build from source</a>
+        </div>
+      </div>
+    </section>
+  </main>
+
+  <footer class="footer">
+    <div class="wrap footer-inner">
+      <span>© <span data-year>2026</span> Simple TV Launcher</span>
+      <a href="https://github.com/mdev64/simple-tv-launcher">Source on GitHub</a>
+    </div>
+  </footer>
+
+  <div class="lightbox" data-lightbox hidden>
+    <button class="lightbox-close" type="button" aria-label="Close" data-close>✕</button>
+    <img data-lightbox-img src="" alt="">
+  </div>
+
+  <script src="script.js"></script>
+</body>
+</html>
