@@ -1,0 +1,444 @@
+<?xml version="1.0" encoding="utf-8"?>
+<!--
+  Carousel home:
+    top     : clock (left) · row of action icons + live status line (right)
+    centre  : infinite carousel of pinned app cards (CarouselView, added in code)
+    below   : position + hints, page dots, "All apps" cue
+  The All apps page is a full-screen layer that slides up over the home layer.
+-->
+<FrameLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    android:id="@+id/launcher_root"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    android:background="@color/bg">
+
+    <!-- Photo wallpaper + scrim. In photo mode this group is a hardware layer (set in code):
+         the GPU caches it as one texture, so a carousel frame costs one full-screen copy
+         instead of photo + three scrim gradients redrawn every frame. -->
+    <FrameLayout
+        android:id="@+id/bg_layer"
+        android:layout_width="match_parent"
+        android:layout_height="match_parent">
+
+        <ImageView
+            android:id="@+id/bg_image"
+            android:layout_width="match_parent"
+            android:layout_height="match_parent"
+            android:contentDescription="@null"
+            android:scaleType="centerCrop"
+            android:visibility="gone" />
+
+        <View
+            android:id="@+id/bg_scrim"
+            android:layout_width="match_parent"
+            android:layout_height="match_parent"
+            android:background="@drawable/bg_scrim"
+            android:visibility="gone" />
+    </FrameLayout>
+
+    <FrameLayout
+        android:id="@+id/home_layer"
+        android:layout_width="match_parent"
+        android:layout_height="match_parent"
+        android:clipChildren="false"
+        android:clipToPadding="false">
+
+        <FrameLayout
+            android:id="@+id/carousel_host"
+            android:layout_width="match_parent"
+            android:layout_height="340dp"
+            android:layout_gravity="top"
+            android:layout_marginTop="120dp"
+            android:clipChildren="false"
+            android:clipToPadding="false" />
+
+        <!-- Screen-edge fade: static gradients in the background colour (set in code) drawn
+             over the carousel but under the top bar / footer. Anything near the edges — side
+             tiles, cards sliding in or out — dims into the same darkness. Only the card band
+             (128–452dp) is live; above/below it the same gradient is baked into the cached
+             photo scrim (MainActivity.applyEdgeFade). -->
+        <View
+            android:id="@+id/edge_fade_left"
+            android:layout_width="@dimen/edge_fade"
+            android:layout_height="@dimen/edge_band_height"
+            android:layout_gravity="top|start"
+            android:layout_marginTop="@dimen/edge_band_top" />
+
+        <View
+            android:id="@+id/edge_fade_right"
+            android:layout_width="@dimen/edge_fade"
+            android:layout_height="@dimen/edge_band_height"
+            android:layout_gravity="top|end"
+            android:layout_marginTop="@dimen/edge_band_top" />
+
+        <!-- Top bar -->
+        <LinearLayout
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:layout_gravity="top"
+            android:orientation="horizontal"
+            android:paddingStart="48dp"
+            android:paddingTop="14dp"
+            android:paddingEnd="40dp">
+
+            <!-- Clock block starts at 28dp (TV-safe); the icon row starts at 14dp so its
+                 glyphs (8dp padding inside 38dp buttons, centred in a 50dp row) begin at
+                 28dp too — level with the top of the greeting. -->
+            <LinearLayout
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_marginTop="14dp"
+                android:orientation="vertical">
+
+                <TextView
+                    android:id="@+id/greeting"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:fontFamily="sans-serif-medium"
+                    android:includeFontPadding="false"
+                    android:letterSpacing="0.12"
+                    android:textAllCaps="true"
+                    android:textSize="10.5sp" />
+
+                <TextView
+                    android:id="@+id/clock_time"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:layout_marginStart="-2dp"
+                    android:layout_marginTop="4dp"
+                    android:fontFamily="sans-serif-light"
+                    android:includeFontPadding="false"
+                    android:textColor="@color/text_primary"
+                    android:textSize="38sp" />
+
+                <TextView
+                    android:id="@+id/clock_date"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:layout_marginTop="4dp"
+                    android:fontFamily="sans-serif-medium"
+                    android:includeFontPadding="false"
+                    android:textColor="#C7FFFFFF"
+                    android:textSize="13sp" />
+            </LinearLayout>
+
+            <View
+                android:layout_width="0dp"
+                android:layout_height="0dp"
+                android:layout_weight="1" />
+
+            <LinearLayout
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:gravity="end"
+                android:orientation="vertical">
+
+                <LinearLayout
+                    android:id="@+id/top_group"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content">
+
+                    <LinearLayout
+                        android:layout_width="wrap_content"
+                        android:layout_height="50dp"
+                        android:gravity="center_vertical"
+                        android:orientation="horizontal">
+
+                        <ImageView
+                            android:id="@+id/status_wifi"
+                            android:layout_width="38dp"
+                            android:layout_height="38dp"
+                            android:layout_marginEnd="4dp"
+                            android:clickable="true"
+                            android:contentDescription="@string/desc_wifi"
+                            android:focusable="true"
+                            android:padding="8dp"
+                            android:src="@drawable/ic_wifi" />
+
+                        <ImageView
+                            android:id="@+id/status_vpn"
+                            android:layout_width="38dp"
+                            android:layout_height="38dp"
+                            android:layout_marginEnd="4dp"
+                            android:clickable="true"
+                            android:contentDescription="@string/desc_vpn"
+                            android:focusable="true"
+                            android:padding="8dp"
+                            android:src="@drawable/ic_vpn_off" />
+
+                        <ImageView
+                            android:id="@+id/btn_launcher_settings"
+                            android:layout_width="38dp"
+                            android:layout_height="38dp"
+                            android:layout_marginEnd="4dp"
+                            android:clickable="true"
+                            android:contentDescription="@string/desc_launcher_settings"
+                            android:focusable="true"
+                            android:padding="8dp"
+                            android:src="@drawable/ic_launcher_settings" />
+
+                        <ImageView
+                            android:id="@+id/btn_tv_settings"
+                            android:layout_width="38dp"
+                            android:layout_height="38dp"
+                            android:clickable="true"
+                            android:contentDescription="@string/desc_tv_settings"
+                            android:focusable="true"
+                            android:padding="8dp"
+                            android:src="@drawable/ic_tv_settings" />
+                    </LinearLayout>
+                </LinearLayout>
+
+                <!-- Network summary, or the focused button's label + value. -->
+                <TextView
+                    android:id="@+id/top_status"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:layout_marginTop="4dp"
+                    android:layout_marginEnd="8dp"
+                    android:ellipsize="end"
+                    android:fontFamily="sans-serif-medium"
+                    android:includeFontPadding="false"
+                    android:maxWidth="320dp"
+                    android:singleLine="true"
+                    android:textColor="#C7FFFFFF"
+                    android:textSize="12sp" />
+            </LinearLayout>
+        </LinearLayout>
+
+        <!-- Position under the card (card bottom = 452dp): page dots, or "4 of 20" when
+             there are too many pins for dots. -->
+        <FrameLayout
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_gravity="top|center_horizontal"
+            android:layout_marginTop="470dp">
+
+            <LinearLayout
+                android:id="@+id/page_dots"
+                android:layout_width="wrap_content"
+                android:layout_height="6dp"
+                android:layout_gravity="center"
+                android:gravity="center_vertical"
+                android:orientation="horizontal" />
+
+            <TextView
+                android:id="@+id/app_caption"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_gravity="center"
+                android:fontFamily="sans-serif-medium"
+                android:includeFontPadding="false"
+                android:textColor="#BFFFFFFF"
+                android:textSize="12sp"
+                android:visibility="gone" />
+        </FrameLayout>
+
+        <!-- Footer, inside the TV-safe area (27dp) and on the same 48dp side margins as
+             the clock and the last top-bar icon: remote hints + the All apps cue. -->
+        <FrameLayout
+            android:id="@+id/home_footer"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:layout_gravity="bottom"
+            android:layout_marginBottom="27dp"
+            android:paddingStart="48dp"
+            android:paddingEnd="48dp">
+
+            <LinearLayout
+                android:id="@+id/hint_open"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_gravity="start|center_vertical"
+                android:gravity="center_vertical"
+                android:orientation="horizontal">
+
+                <TextView
+                    style="@style/HomeKeyChip"
+                    android:text="OK" />
+
+                <TextView
+                    android:id="@+id/hint_open_label"
+                    style="@style/HomeHint"
+                    android:text="Open" />
+            </LinearLayout>
+
+            <LinearLayout
+                android:id="@+id/all_apps_cue"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_gravity="center"
+                android:gravity="center_vertical"
+                android:orientation="horizontal">
+
+                <TextView
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:fontFamily="sans-serif-medium"
+                    android:includeFontPadding="false"
+                    android:letterSpacing="0.08"
+                    android:text="OTHER APPS"
+                    android:textColor="#CCFFFFFF"
+                    android:textSize="11sp" />
+
+                <ImageView
+                    android:id="@+id/all_apps_chevron"
+                    android:layout_width="20dp"
+                    android:layout_height="20dp"
+                    android:layout_marginStart="4dp"
+                    android:contentDescription="@null"
+                    android:src="@drawable/ic_chevron_down" />
+            </LinearLayout>
+
+            <LinearLayout
+                android:id="@+id/hint_options"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_gravity="end|center_vertical"
+                android:gravity="center_vertical"
+                android:orientation="horizontal">
+
+                <TextView
+                    style="@style/HomeKeyChip"
+                    android:text="HOLD OK" />
+
+                <TextView
+                    style="@style/HomeHint"
+                    android:text="Options" />
+            </LinearLayout>
+        </FrameLayout>
+    </FrameLayout>
+
+    <!-- All apps page -->
+    <FrameLayout
+        android:id="@+id/all_apps_page"
+        android:layout_width="match_parent"
+        android:layout_height="match_parent"
+        android:background="#FF0C0C13"
+        android:visibility="gone">
+
+        <LinearLayout
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:baselineAligned="true"
+            android:gravity="bottom"
+            android:orientation="horizontal"
+            android:paddingStart="30dp"
+            android:paddingTop="30dp"
+            android:paddingEnd="30dp">
+
+            <TextView
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:fontFamily="sans-serif-medium"
+                android:includeFontPadding="false"
+                android:text="Other apps"
+                android:textColor="@color/text_primary"
+                android:textSize="26sp"
+                android:textStyle="bold" />
+
+            <TextView
+                android:id="@+id/all_apps_count"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_marginStart="10dp"
+                android:fontFamily="sans-serif-medium"
+                android:includeFontPadding="false"
+                android:textColor="#B3FFFFFF"
+                android:textSize="14sp" />
+
+            <View
+                android:layout_width="0dp"
+                android:layout_height="0dp"
+                android:layout_weight="1" />
+
+            <LinearLayout
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:gravity="end"
+                android:orientation="vertical">
+
+                <TextView
+                    android:id="@+id/all_apps_focus"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:ellipsize="end"
+                    android:fontFamily="sans-serif-medium"
+                    android:includeFontPadding="false"
+                    android:maxWidth="380dp"
+                    android:singleLine="true"
+                    android:textColor="@color/text_primary"
+                    android:textSize="15sp" />
+
+                <TextView
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:layout_marginTop="4dp"
+                    android:includeFontPadding="false"
+                    android:text="Hold OK to add to home · BACK to return"
+                    android:textColor="#A6FFFFFF"
+                    android:textSize="11sp" />
+            </LinearLayout>
+        </LinearLayout>
+
+        <androidx.recyclerview.widget.RecyclerView
+            android:id="@+id/apps_grid"
+            android:layout_width="match_parent"
+            android:layout_height="match_parent"
+            android:layout_marginTop="68dp"
+            android:clipChildren="false"
+            android:clipToPadding="true"
+            android:fadingEdgeLength="28dp"
+            android:requiresFadingEdge="vertical"
+            android:descendantFocusability="afterDescendants"
+            android:focusableInTouchMode="false"
+            android:overScrollMode="never"
+            android:paddingStart="16dp"
+            android:paddingTop="12dp"
+            android:paddingEnd="16dp"
+            android:paddingBottom="16dp"
+            android:scrollbars="none" />
+    </FrameLayout>
+
+    <!-- Cold-boot splash/loading screen so the launcher never flashes half-loaded tiles. -->
+    <LinearLayout
+        android:id="@+id/boot_overlay"
+        android:layout_width="match_parent"
+        android:layout_height="match_parent"
+        android:background="@color/bg"
+        android:clickable="true"
+        android:focusable="true"
+        android:gravity="center"
+        android:orientation="vertical"
+        android:visibility="gone">
+
+        <ImageView
+            android:id="@+id/boot_logo"
+            android:layout_width="172dp"
+            android:layout_height="172dp"
+            android:contentDescription="@string/app_name"
+            android:scaleType="fitCenter"
+            android:src="@drawable/ic_launcher_foreground" />
+
+        <ProgressBar
+            android:id="@+id/boot_progress"
+            style="?android:attr/progressBarStyleSmall"
+            android:layout_width="28dp"
+            android:layout_height="28dp"
+            android:layout_marginTop="16dp"
+            android:indeterminate="true" />
+
+        <TextView
+            android:id="@+id/boot_status"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_marginTop="10dp"
+            android:fontFamily="sans-serif-medium"
+            android:letterSpacing="0.04"
+            android:text="Loading home screen…"
+            android:textColor="@color/text_secondary"
+            android:textSize="13sp" />
+
+    </LinearLayout>
+
+</FrameLayout>

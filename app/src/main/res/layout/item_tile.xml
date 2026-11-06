@@ -1,0 +1,27 @@
+<?xml version="1.0" encoding="utf-8"?>
+<!-- One 16:9 artwork tile (favourite or app). Focus styling is applied by TileStyler. -->
+<FrameLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    android:layout_width="match_parent"
+    android:layout_height="wrap_content"
+    android:layout_marginHorizontal="@dimen/tile_margin_h"
+    android:layout_marginTop="@dimen/tile_margin"
+    android:paddingBottom="10dp"
+    android:clipChildren="false"
+    android:clipToPadding="false">
+
+    <com.mdev64.simpletvlauncher.TileFrame
+        android:id="@+id/tile"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:clickable="true"
+        android:focusable="true">
+
+        <ImageView
+            android:id="@+id/tile_art"
+            android:layout_width="match_parent"
+            android:layout_height="match_parent"
+            android:contentDescription="@null"
+            android:scaleType="fitXY" />
+    </com.mdev64.simpletvlauncher.TileFrame>
+
+</FrameLayout>

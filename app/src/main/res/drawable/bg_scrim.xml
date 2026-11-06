@@ -1,0 +1,46 @@
+<?xml version="1.0" encoding="utf-8"?>
+<!--
+  Photo-wallpaper scrim (shown only in photo mode).
+    1. Light top/bottom vignette so the clock/status stay readable without crushing dark photos.
+    2. Dark side vignettes: the carousel's side tiles fade out towards the screen edges, and
+       without these a bright patch in the photo shows through the fade and reads like
+       light bleeding from the panel edge. Colour = @color/bg.
+-->
+<layer-list xmlns:android="http://schemas.android.com/apk/res/android">
+    <item>
+        <shape android:shape="rectangle">
+            <gradient
+                android:angle="270"
+                android:startColor="#58000000"
+                android:centerColor="#14000000"
+                android:endColor="#28000000"
+                android:type="linear" />
+        </shape>
+    </item>
+    <item
+        android:width="340dp"
+        android:gravity="start|fill_vertical">
+        <shape android:shape="rectangle">
+            <gradient
+                android:angle="0"
+                android:centerX="0.38"
+                android:startColor="#F20B0B10"
+                android:centerColor="#A60B0B10"
+                android:endColor="#000B0B10"
+                android:type="linear" />
+        </shape>
+    </item>
+    <item
+        android:width="340dp"
+        android:gravity="end|fill_vertical">
+        <shape android:shape="rectangle">
+            <gradient
+                android:angle="180"
+                android:centerX="0.38"
+                android:startColor="#F20B0B10"
+                android:centerColor="#A60B0B10"
+                android:endColor="#000B0B10"
+                android:type="linear" />
+        </shape>
+    </item>
+</layer-list>

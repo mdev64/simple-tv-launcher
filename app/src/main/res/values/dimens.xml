@@ -1,0 +1,11 @@
+<?xml version="1.0" encoding="utf-8"?>
+<resources>
+    <dimen name="tile_margin">9dp</dimen>
+    <!-- Wider than the 13 % focus growth (~11dp) so the edge columns never clip. -->
+    <dimen name="tile_margin_h">14dp</dimen>
+    <!-- Home screen-edge fade width; a side tile shows ~168dp, so the fade covers it fully. -->
+    <dimen name="edge_fade">220dp</dimen>
+    <!-- Card band the live edge fade covers: carousel_host top (120) + (340 − 324) / 2. -->
+    <dimen name="edge_band_top">128dp</dimen>
+    <dimen name="edge_band_height">324dp</dimen>
+</resources>

@@ -1,0 +1,47 @@
+<?xml version="1.0" encoding="utf-8"?>
+<!-- Full-span section header in the content pane: title, count, optional hint. -->
+<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    android:layout_width="match_parent"
+    android:layout_height="wrap_content"
+    android:baselineAligned="true"
+    android:focusable="false"
+    android:gravity="bottom"
+    android:orientation="horizontal"
+    android:paddingStart="@dimen/tile_margin"
+    android:paddingTop="14dp"
+    android:paddingEnd="@dimen/tile_margin"
+    android:paddingBottom="2dp">
+
+    <TextView
+        android:id="@+id/section_title"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:fontFamily="sans-serif-medium"
+        android:includeFontPadding="false"
+        android:textColor="@color/text_primary"
+        android:textSize="17sp"
+        android:textStyle="bold" />
+
+    <TextView
+        android:id="@+id/section_count"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_marginStart="8dp"
+        android:fontFamily="sans-serif-medium"
+        android:includeFontPadding="false"
+        android:textColor="#B3FFFFFF"
+        android:textSize="13sp" />
+
+    <TextView
+        android:id="@+id/section_hint"
+        android:layout_width="0dp"
+        android:layout_height="wrap_content"
+        android:layout_weight="1"
+        android:ellipsize="end"
+        android:gravity="end"
+        android:includeFontPadding="false"
+        android:singleLine="true"
+        android:textColor="#A6FFFFFF"
+        android:textSize="11.5sp" />
+
+</LinearLayout>

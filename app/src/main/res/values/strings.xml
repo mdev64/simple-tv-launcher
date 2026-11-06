@@ -1,0 +1,11 @@
+<?xml version="1.0" encoding="utf-8"?>
+<resources>
+    <string name="app_name">Simple TV Launcher</string>
+    <string name="settings_title">Launcher Settings</string>
+    <string name="desc_launcher_settings">Launcher settings</string>
+    <string name="desc_tv_settings">TV system settings</string>
+    <string name="desc_wifi">Wi-Fi connected</string>
+    <string name="desc_wifi_off">Wi-Fi not connected</string>
+    <string name="desc_vpn">VPN connected</string>
+    <string name="desc_ethernet">Ethernet connected</string>
+</resources>
