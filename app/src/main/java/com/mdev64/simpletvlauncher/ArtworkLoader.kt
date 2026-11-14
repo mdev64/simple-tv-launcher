@@ -30,7 +30,16 @@ class ArtworkLoader(private val pm: PackageManager) {
         val key = "$widthPx x $heightPx ${item.key}"
         cache.get(key)?.let { return it }
         val drawable = drawableOf(item) ?: return null
-        val bitmap = rasterise(drawable, widthPx, heightPx)
+        // Another app's drawable is drawn here, on a worker thread: a broken one must cost
+        // that app its artwork, not take the launcher down with an uncaught exception.
+        val bitmap = try {
+            rasterise(drawable, widthPx, heightPx)
+        } catch (_: Exception) {
+            return null
+        } catch (_: OutOfMemoryError) {
+            cache.evictAll()
+            return null
+        }
         cache.put(key, bitmap)
         return bitmap
     }

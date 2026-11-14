@@ -545,11 +545,22 @@ class CarouselView(context: Context) : FrameLayout(context) {
 
     override fun getChildDrawingOrder(childCount: Int, drawingPosition: Int): Int {
         // Cards farthest from the centre first; the empty-state card (non-card child) last.
-        val order = (0 until childCount).sortedWith(compareBy<Int> { i ->
-            if (i < SLOTS) -abs(offsets[i]) else 1
-        })
-        return order[drawingPosition]
+        // Asked once per child per frame, so the order is cached per set of offsets instead
+        // of sorting a fresh list each time (6 sorts a frame while the carousel moves).
+        if (childCount != drawOrder.size) return drawingPosition
+        var sig = 0
+        for (o in offsets) sig = sig * 8 + (o + SLOTS)
+        if (sig != drawOrderSig) {
+            (0 until childCount).sortedWith(compareBy<Int> { i ->
+                if (i < SLOTS) -abs(offsets[i]) else 1
+            }).forEachIndexed { pos, child -> drawOrder[pos] = child }
+            drawOrderSig = sig
+        }
+        return drawOrder[drawingPosition]
     }
+
+    private val drawOrder = IntArray(SLOTS + 1)
+    private var drawOrderSig = -1
 
     override fun onFocusChanged(gainFocus: Boolean, direction: Int, previouslyFocusedRect: android.graphics.Rect?) {
         super.onFocusChanged(gainFocus, direction, previouslyFocusedRect)

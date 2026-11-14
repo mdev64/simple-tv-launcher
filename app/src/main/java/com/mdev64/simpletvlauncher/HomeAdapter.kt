@@ -157,15 +157,19 @@ class HomeAdapter(
             return
         }
         holder.art.setImageDrawable(null)
-        executor.execute {
-            val bmp = artwork.load(item, w, h) ?: return@execute
-            holder.art.post {
-                val pos = holder.bindingAdapterPosition
-                val now = if (pos != RecyclerView.NO_POSITION) tileAt(pos) else null
-                if (now?.app?.key == item.key && now.favourite == row.favourite) {
-                    holder.art.setImageBitmap(bmp)
+        try {
+            executor.execute {
+                val bmp = artwork.load(item, w, h) ?: return@execute
+                holder.art.post {
+                    val pos = holder.bindingAdapterPosition
+                    val now = if (pos != RecyclerView.NO_POSITION) tileAt(pos) else null
+                    if (now?.app?.key == item.key && now.favourite == row.favourite) {
+                        holder.art.setImageBitmap(bmp)
+                    }
                 }
             }
+        } catch (_: java.util.concurrent.RejectedExecutionException) {
+            // The activity shut its worker down (onDestroy) while a bind was still pending.
         }
     }
 

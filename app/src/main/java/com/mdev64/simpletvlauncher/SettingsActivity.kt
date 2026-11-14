@@ -177,6 +177,14 @@ class SettingsActivity : Activity() {
         screenSaver.stopIdleTimer()
     }
 
+    override fun onDestroy() {
+        super.onDestroy()
+        // HOME with the wallpaper picker open destroys this activity without closing it;
+        // its thumbnail thread pool would otherwise live for the rest of the process.
+        imagePicker?.release()
+        imagePicker = null
+    }
+
     override fun dispatchKeyEvent(event: KeyEvent): Boolean {
         if (screenSaver.onKeyEvent(event)) return true
         imagePicker?.takeIf { it.isShowing }?.let { picker ->
