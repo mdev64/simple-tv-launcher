@@ -185,6 +185,18 @@ class ImagePickerOverlay(
         onClosed()
     }
 
+    /**
+     * The activity is going away with the picker still open: stop the thumbnail threads
+     * and drop the cache without the close callbacks (they would rebuild a dead screen).
+     */
+    fun release() {
+        if (closed) return
+        closed = true
+        priorFocusability.clear()
+        worker.shutdownNow()
+        thumbs.evictAll()
+    }
+
     // ------------------------------------------------------------ data
 
     private fun queryFolders(): List<Folder> {
@@ -349,8 +361,9 @@ class ImagePickerOverlay(
             if (worker.isShutdown) return
             worker.execute {
                 val bmp = loadThumb(t.photo.uri) ?: return@execute
+                if (closed) return@execute // cache already emptied; don't refill it
                 thumbs.put(id, bmp)
-                main.post { if (holder.boundId == id) holder.art.setImageBitmap(bmp) }
+                main.post { if (!closed && holder.boundId == id) holder.art.setImageBitmap(bmp) }
             }
         }
     }

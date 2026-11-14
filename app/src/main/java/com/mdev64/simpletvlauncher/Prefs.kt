@@ -254,12 +254,29 @@ object WallpaperStore {
         blurUri = null
     }
 
+    /**
+     * Drops the in-memory copies without touching the disk cache (solid background active).
+     * Not synchronized on purpose: it runs on the main thread and must never wait behind a
+     * conversion; the fields are volatile.
+     */
+    fun releaseMemory() {
+        cachedBitmap = null
+        cachedUri = null
+        blurResult = null
+        blurUri = null
+    }
+
     /** What the background ImageView should show, if already in memory (no I/O; main-thread safe). */
     fun memoryDisplay(prefs: Prefs): android.graphics.Bitmap? {
         val uri = prefs.bgUri ?: return null
         if (prefs.bgBlur) {
             val b = blurResult
-            return if (b != null && blurUri == uri) b else null
+            if (b == null || blurUri != uri) return null
+            // Blur switched back on with the blurred copy still around: the full-size frame
+            // is not needed any more (it is only meant to live while blur is off).
+            cachedBitmap = null
+            cachedUri = null
+            return b
         }
         return getMemoryCached(prefs)?.first
     }

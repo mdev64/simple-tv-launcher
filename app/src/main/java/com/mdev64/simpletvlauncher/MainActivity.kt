@@ -906,8 +906,16 @@ class MainActivity : Activity() {
             if (isColdBoot && prefs.bgMode == 2 && prefs.bgUri != null) {
                 WallpaperStore.loadDisplay(applicationContext, prefs)
             }
-            val apps = scanApps()
-            if (isColdBoot) preloadInitialArtwork(apps)
+            // PackageManager calls can throw (binder failure, package changing mid-query).
+            // A failed scan keeps the current list: treating it as "no apps" would be wrong,
+            // and letting it escape would crash the launcher from the worker thread.
+            val apps = try {
+                scanApps()
+            } catch (_: Exception) {
+                main.post { if (!isDestroyed) dismissBootOverlay() }
+                return@execute
+            }
+            if (isColdBoot) runCatching { preloadInitialArtwork(apps) }
             main.post {
                 if (isFinishing || isDestroyed) return@post
                 val changed = apps != allApps || adapter.itemCount == 0
@@ -1133,7 +1141,10 @@ class MainActivity : Activity() {
     private fun fetchVpnCountry(force: Boolean) {
         val now = System.currentTimeMillis()
         if (vpnCountryFetching) return
-        if (!force && currentVpnCountry != null && now - lastVpnLookupMs < 30_000L) return
+        // Throttled whether or not the last lookup worked: with a VPN that blocks the lookup
+        // the country stays null, and every capability change (signal strength, every few
+        // seconds) would otherwise start another thread and two more HTTPS requests.
+        if (!force && now - lastVpnLookupMs < 30_000L) return
         vpnCountryFetching = true
         lastVpnLookupMs = now
 
@@ -1142,6 +1153,7 @@ class MainActivity : Activity() {
                 ?: queryTraceCountry("https://www.cloudflare.com/cdn-cgi/trace")
             main.post {
                 vpnCountryFetching = false
+                if (isDestroyed) return@post
                 if (isVpnConnected && !country.isNullOrBlank()) {
                     currentVpnCountry = country
                     renderNetworkRows()
@@ -1294,6 +1306,8 @@ class MainActivity : Activity() {
 
     /** [bmp] is already the display copy (blurred or full) from [WallpaperStore]. */
     private fun showWallpaper(image: ImageView, scrim: View, bmp: Bitmap) {
+        // Drawing a recycled bitmap throws; a late background load can lose that race.
+        if (bmp.isRecycled) return
         val current = (image.drawable as? BitmapDrawable)?.bitmap
         if (current !== bmp) {
             image.setImageDrawable(BitmapDrawable(resources, bmp))
@@ -1399,6 +1413,10 @@ class MainActivity : Activity() {
         if (!photo) {
             updateCardFrost(null)
             setPhotoLayer(false)
+            // A solid background shows no photo: don't keep the ~8 MB frame alive in the
+            // hidden ImageView and the store. The disk cache brings it back in one decode.
+            if (image.drawable != null) image.setImageDrawable(null)
+            WallpaperStore.releaseMemory()
         }
         // Cards fade into whatever the screen edge shows: the photo's dark side vignette
         // (bg_scrim, @color/bg) or the solid colour itself.
@@ -1494,8 +1512,18 @@ class MainActivity : Activity() {
         try {
             startActivity(intent)
         } catch (_: Exception) {
-            packageManager.getLaunchIntentForPackage(item.component.packageName)
-                ?.let { startActivity(it) }
+            // The fallback can fail too (app removed or disabled since the last scan).
+            val started = try {
+                packageManager.getLaunchIntentForPackage(item.component.packageName)
+                    ?.let { startActivity(it); true } ?: false
+            } catch (_: Exception) {
+                false
+            }
+            if (!started) {
+                Toast.makeText(this, "Can't open ${item.label}", Toast.LENGTH_SHORT).show()
+                cachedApps = emptyList()
+                refreshApps()
+            }
         }
     }
 
