@@ -23,8 +23,8 @@ android {
         // Note: with targetSdk >= 29, WifiManager.setWifiEnabled() is a no-op on Android 10+,
         // so the Wi-Fi pill opens the system Wi-Fi panel/settings on those TVs.
         targetSdk = 35
-        versionCode = 1
-        versionName = "1.0"
+        versionCode = 2
+        versionName = "1.0.1"
     }
 
     signingConfigs {
